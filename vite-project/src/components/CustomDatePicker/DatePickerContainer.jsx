@@ -3,48 +3,69 @@ import PresetButtons from './PresetButtons';
 import CustomDateRange from './CustomDateRange';
 import './CustomDatePicker.css';
 
-const DatePickerContainer = ({ onDateSelect }) => {
-  const [selectedPreset, setSelectedPreset] = useState(null);
-  const [customRange, setCustomRange] = useState({ from: '', to: '' });
+const DatePickerContainer = ({ onDateChange, styles }) => {
+  const [preset, setPreset] = useState(null);
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
 
-  const handlePresetClick = (preset) => {
-    setSelectedPreset(preset);
-    let date = new Date();
-    switch (preset) {
+  const handlePresetClick = (selectedPreset) => {
+    setPreset(selectedPreset);
+    const today = new Date();
+    let newFromDate = '';
+    let newToDate = '';
+
+    switch (selectedPreset) {
       case 'Today':
-        onDateSelect({ from: date.toISOString().split('T')[0], to: date.toISOString().split('T')[0] });
+        newFromDate = today.toISOString().split('T')[0];
+        newToDate = newFromDate;
         break;
       case 'Yesterday':
-        date.setDate(date.getDate() - 1);
-        onDateSelect({ from: date.toISOString().split('T')[0], to: date.toISOString().split('T')[0] });
+        const yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1);
+        newFromDate = yesterday.toISOString().split('T')[0];
+        newToDate = newFromDate;
         break;
       case 'This Month':
-        onDateSelect({
-          from: new Date(date.getFullYear(), date.getMonth(), 1).toISOString().split('T')[0],
-          to: new Date(date.getFullYear(), date.getMonth() + 1, 0).toISOString().split('T')[0],
-        });
+        newFromDate = new Date(today.getFullYear(), today.getMonth(), 1)
+          .toISOString()
+          .split('T')[0];
+        newToDate = new Date(today.getFullYear(), today.getMonth() + 1, 0)
+          .toISOString()
+          .split('T')[0];
         break;
       case 'Last Month':
-        onDateSelect({
-          from: new Date(date.getFullYear(), date.getMonth() - 1, 1).toISOString().split('T')[0],
-          to: new Date(date.getFullYear(), date.getMonth(), 0).toISOString().split('T')[0],
-        });
+        newFromDate = new Date(today.getFullYear(), today.getMonth() - 1, 1)
+          .toISOString()
+          .split('T')[0];
+        newToDate = new Date(today.getFullYear(), today.getMonth(), 0)
+          .toISOString()
+          .split('T')[0];
         break;
       default:
         break;
     }
+
+    setFromDate(newFromDate);
+    setToDate(newToDate);
+    onDateChange({ from: newFromDate, to: newToDate });
   };
 
-  const handleCustomRangeChange = (range) => {
-    setCustomRange(range);
-    onDateSelect(range);
+  const handleCustomDateChange = (from, to) => {
+    setPreset('Custom Range');
+    setFromDate(from);
+    setToDate(to);
+    onDateChange({ from, to });
   };
 
   return (
-    <div className="date-picker-container">
-      <PresetButtons selectedPreset={selectedPreset} onPresetClick={handlePresetClick} />
-      {selectedPreset === 'Custom Range' && (
-        <CustomDateRange value={customRange} onChange={handleCustomRangeChange} />
+    <div className="date-picker-container" style={styles}>
+      <PresetButtons onClick={handlePresetClick} activePreset={preset} />
+      {preset === 'Custom Range' && (
+        <CustomDateRange
+          fromDate={fromDate}
+          toDate={toDate}
+          onChange={handleCustomDateChange}
+        />
       )}
     </div>
   );

@@ -1,28 +1,22 @@
 import React from 'react';
+import DateInput from './DateInput';
+import './CustomDatePicker.css';
 
-const CustomDateRange = ({ value, onChange }) => {
-  const handleChange = (field, date) => {
-    onChange({ ...value, [field]: date });
-  };
-
+const CustomDateRange = ({ fromDate, toDate, onChange }) => {
   return (
     <div className="custom-date-range">
-      <div>
-        <label>From:</label>
-        <input
-          type="date"
-          value={value.from}
-          onChange={(e) => handleChange('from', e.target.value)}
-        />
-      </div>
-      <div>
-        <label>To:</label>
-        <input
-          type="date"
-          value={value.to}
-          onChange={(e) => handleChange('to', e.target.value)}
-        />
-      </div>
+      <DateInput
+        label="From"
+        value={fromDate}
+        onChange={(date) => onChange(date, toDate)}
+        max={toDate}
+      />
+      <DateInput
+        label="To"
+        value={toDate}
+        onChange={(date) => onChange(fromDate, date)}
+        min={fromDate}
+      />
     </div>
   );
 };
