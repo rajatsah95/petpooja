@@ -1,35 +1,47 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import TableContainer from './components/CustomTable/TableContainer';
+import FormContainer from './components/CustomForm/FormContainer';
+import DatePickerContainer from './components/CustomDatePicker/DatePickerContainer';
+import './App.css';
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+  const tableData = [
+    { id: 1, name: 'Alice', age: 25 },
+    { id: 2, name: 'Bob', age: 30 },
+    { id: 3, name: 'Charlie', age: 35 },
+  ];
+
+  const tableColumns = [
+    { key: 'id', title: 'ID', filterable: true },
+    { key: 'name', title: 'Name', filterable: true },
+    { key: 'age', title: 'Age', filterable: false },
+  ];
+
+  const formConfig = [
+    { name: 'username', label: 'Username', type: 'text', required: true },
+    { name: 'email', label: 'Email', type: 'text', required: true },
+    { name: 'password', label: 'Password', type: 'password', required: true },
+  ];
+
+  const handleFormSubmit = (data) => {
+    console.log('Form Submitted:', data);
+  };
+
+  const handleDateSelect = (range) => {
+    console.log('Date Selected:', range);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div className="app">
+      <h1>React App with Custom Components</h1>
+      <h2>Custom Table</h2>
+      <TableContainer data={tableData} columns={tableColumns} />
+      <h2>Custom Form</h2>
+      <FormContainer formConfig={formConfig} onSubmit={handleFormSubmit} />
+      <h2>Custom Date Picker</h2>
+      <DatePickerContainer onDateSelect={handleDateSelect} />
+    </div>
+  );
+};
 
-export default App
+export default App;
